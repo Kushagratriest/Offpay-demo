@@ -1,0 +1,10 @@
+{
+  "description": "Enables offline peer-to-peer money transfers via Bluetooth without internet, offering secure, quick payments and requests in close proximity.",
+  "robots": {
+    "index": false
+  },
+  "accessibility": {
+    "addBypassLinks": false,
+    "ignoreReducedMotion": false
+  }
+}

@@ -448,7 +448,7 @@ function QRCodeSVG({ size = 180, light = "#F5F1EA", dark = "#0A0908" }: { size?:
 
 function ScreenShell({ children, scrollable = true }: { children: React.ReactNode; scrollable?: boolean }) {
   return (
-    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif", paddingBottom: 80, boxSizing: "border-box", overflowY: scrollable ? "auto" : "hidden" }}>
+    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif", paddingBottom: 80, boxSizing: "border-box", overflowY: scrollable ? "auto" : "hidden" }}>
       <div style={{ height: 44 }} />
       {children}
     </div>
@@ -474,13 +474,13 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const [page,    setPage]    = useState(0);
   const [pressed, setPressed] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const CARD_W = 343;
 
   useEffect(() => {
     const id = setInterval(() => {
       setPage((p) => {
         const next = (p + 1) % TIPS.length;
-        scrollRef.current?.scrollTo({ left: next * CARD_W, behavior: "smooth" });
+        const cardW = scrollRef.current?.clientWidth ?? 0;
+        scrollRef.current?.scrollTo({ left: next * cardW, behavior: "smooth" });
         return next;
       });
     }, 4000);
@@ -489,12 +489,13 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const idx = Math.round(scrollRef.current.scrollLeft / CARD_W);
+    const cardW = scrollRef.current.clientWidth || 1;
+    const idx = Math.round(scrollRef.current.scrollLeft / cardW);
     setPage(Math.max(0, Math.min(idx, TIPS.length - 1)));
   };
 
   return (
-    <div style={{ width: CARD_W, height: 140, backgroundColor: P.surface, border: `1px solid ${P.border}`, borderRadius: 14, marginLeft: 16, marginTop: 16, overflow: "hidden", position: "relative", flexShrink: 0 }}>
+    <div style={{ height: 140, backgroundColor: P.surface, border: `1px solid ${P.border}`, borderRadius: 14, marginLeft: 16, marginRight: 16, marginTop: 16, overflow: "hidden", position: "relative" }}>
       <div ref={scrollRef} onScroll={handleScroll}
         style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", height: "100%" }}
       >
@@ -507,7 +508,7 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               onMouseDown={() => setPressed(i)}
               onMouseUp={() => setPressed(null)}
               onMouseLeave={() => setPressed(null)}
-              style={{ scrollSnapAlign: "start", flexShrink: 0, width: CARD_W, height: 140, display: "flex", alignItems: "center", gap: 14, padding: "0 16px 24px", boxSizing: "border-box", cursor: "pointer", backgroundColor: isPressed ? P.border : "transparent", transition: "background-color 100ms ease" }}
+              style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", height: 140, display: "flex", alignItems: "center", gap: 14, padding: "0 16px 24px", boxSizing: "border-box", cursor: "pointer", backgroundColor: isPressed ? P.border : "transparent", transition: "background-color 100ms ease" }}
             >
               <div style={{ width: 44, height: 44, borderRadius: "50%", backgroundColor: "var(--c-badge-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Icon size={22} color={P.gold} stroke={1.75} />
@@ -1220,10 +1221,10 @@ const ISSUE_TYPES = ["Wrong amount deducted","Transfer not received","Transactio
 // shared bottom sheet wrapper
 function BottomSheet({ onClose, title, children }: { onClose: () => void; title: string; children: React.ReactNode }) {
   return (
-    <div style={{ position: "fixed", inset: 0, left: "50%", transform: "translateX(-50%)", width: 375, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 300, display: "flex", alignItems: "flex-end" }}
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 300, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
       onClick={onClose}
     >
-      <div style={{ width: "100%", backgroundColor: P.surface, borderRadius: "20px 20px 0 0", padding: "24px 16px 48px", border: `1px solid ${P.border}`, maxHeight: "75vh", overflowY: "auto" }}
+      <div style={{ width: "100%", maxWidth: 480, backgroundColor: P.surface, borderRadius: "20px 20px 0 0", padding: "24px 16px 48px", border: `1px solid ${P.border}`, maxHeight: "75vh", overflowY: "auto" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
@@ -1244,8 +1245,8 @@ function ConfirmModal({ title, body, confirmLabel, confirmDanger, onConfirm, onC
   onConfirm: () => void; onCancel: () => void; children?: React.ReactNode;
 }) {
   return (
-    <div style={{ position: "fixed", inset: 0, left: "50%", transform: "translateX(-50%)", width: 375, backgroundColor: "rgba(0,0,0,0.72)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", boxSizing: "border-box" }}>
-      <div style={{ width: "100%", backgroundColor: P.surface, borderRadius: 20, padding: "28px 20px 20px", border: `1px solid ${P.border}` }}>
+    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.72)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", boxSizing: "border-box" }}>
+      <div style={{ width: "100%", maxWidth: 400, backgroundColor: P.surface, borderRadius: 20, padding: "28px 20px 20px", border: `1px solid ${P.border}` }}>
         <div style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: P.textPrimary, marginBottom: 8 }}>{title}</div>
         {body && <div style={{ fontSize: 14, color: P.textSecondary, lineHeight: "20px", marginBottom: 20 }}>{body}</div>}
         {children}
@@ -2229,7 +2230,7 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div style={{ width: 375, minHeight: "100vh", backgroundColor: "#0A0908", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: "#0A0908", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
       <style>{`
         @keyframes splashFadeIn {
           from { opacity: 0; transform: scale(0.86); }
@@ -2372,7 +2373,7 @@ function OnboardingFlow({ onComplete }: { onComplete: (name: string) => void }) 
   const [phone, setPhone] = useState("");
 
   return (
-    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @keyframes slideInRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
         @keyframes slideInLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
@@ -2421,12 +2422,14 @@ function ActionsCarousel({ onPageChange, onAction, walletBalance, bankBalance }:
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const idx = Math.round(scrollRef.current.scrollLeft / 343);
+    const cardW = scrollRef.current.clientWidth || 1;
+    const idx = Math.round(scrollRef.current.scrollLeft / cardW);
     const c = Math.max(0, Math.min(idx, 1));
     setPage(c); onPageChange(c);
   };
   const scrollTo = (idx: number) => {
-    scrollRef.current?.scrollTo({ left: idx * 343, behavior: "smooth" });
+    const cardW = scrollRef.current?.clientWidth ?? 0;
+    scrollRef.current?.scrollTo({ left: idx * cardW, behavior: "smooth" });
     setPage(idx); onPageChange(idx);
   };
 
@@ -2435,14 +2438,14 @@ function ActionsCarousel({ onPageChange, onAction, walletBalance, bankBalance }:
   const liveAmt = { wallet: walletBalance, bank: bankBalance };
 
   return (
-    <div style={{ marginTop: 24, marginLeft: 16, width: 343 }}>
+    <div style={{ marginTop: 24, marginLeft: 16, marginRight: 16 }}>
       <div ref={scrollRef} onScroll={handleScroll}
         style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", height: trackH, transition: "height 250ms ease" }}
       >
-        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: 343, display: "grid", gridTemplateColumns: "repeat(3, calc((343px - 32px) / 3))", gridTemplateRows: "95px 95px", gap: 16, alignContent: "start", height: GRID_HEIGHT }}>
+        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "95px 95px", gap: 16, alignContent: "start", height: GRID_HEIGHT }}>
           {ACTIONS.map((a) => <ActionButton key={a.label} icon={a.icon} label={a.label} onClick={() => onAction(a.screen)} />)}
         </div>
-        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: 343, height: page2H, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 250ms ease" }}>
+        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", height: page2H, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 250ms ease" }}>
           {balanceView === null ? (
             <div style={{ display: "flex", gap: 12, width: "100%" }}>
               {(["wallet","bank"] as BalanceKey[]).map((key) => (
@@ -2522,7 +2525,7 @@ function HomeScreen({ onNavigate, onTabSwitch, walletBalance, bankBalance, userN
     : [];
 
   return (
-    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
       {/* Sticky header */}
       <div style={{ position: "sticky", top: 0, zIndex: 50, backgroundColor: P.bg, paddingTop: 44 }}>
         <div style={{ margin: "16px 16px 0", display: "flex", alignItems: "center", gap: 12, position: "relative" }}>
@@ -2786,6 +2789,7 @@ function AppInner() {
   useEffect(() => {
     document.body.classList.toggle("theme-light", effectiveTheme === "light");
   }, [effectiveTheme]);
+
   const switchTab = (key: NavKey) => { setActiveTab(key); setScreen(key); };
   const goHome    = () => { setActiveTab("home"); setScreen("home"); };
 
@@ -2798,7 +2802,7 @@ function AppInner() {
   };
 
   const navBar = (
-    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 375, height: 60, backgroundColor: P.surface, borderTop: `1px solid ${P.border}`, display: "flex", alignItems: "center", zIndex: 100 }}>
+    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, width: "100%", maxWidth: 480, margin: "0 auto", height: 60, backgroundColor: P.surface, borderTop: `1px solid ${P.border}`, display: "flex", alignItems: "center", zIndex: 100 }}>
       {NAV_TABS.map(({ key, icon: Icon, label }) => {
         const active = activeTab === key;
         return (
@@ -2815,7 +2819,7 @@ function AppInner() {
 
   const wrap = (child: React.ReactNode) => (
     <div className={effectiveTheme === "light" ? "theme-light" : ""}
-      style={{ width: 375, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
+      style={{ width: "100%", maxWidth: 480, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
     >{child}</div>
   );
 
@@ -2892,7 +2896,7 @@ function AppInner() {
 
   return (
     <div className={effectiveTheme === "light" ? "theme-light" : ""}
-      style={{ width: 375, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
+      style={{ width: "100%", maxWidth: 480, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
     >
       {content}
       {navBar}

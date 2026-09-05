@@ -1,4 +1,4 @@
-const CACHE_NAME = "offpay-cache-v1";
+const CACHE_NAME = "offpay-cache-v2";
 const OFFLINE_URLS = ["/", "/index.html", "/manifest.json", "/icon-192.png", "/icon-512.png"];
 
 self.addEventListener("install", (event) => {

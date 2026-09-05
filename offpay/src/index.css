@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,400;0,600;0,700;1,400&display=swap');
+@import 'tailwindcss';
+
+html, body, #root { height: 100%; }
+
+/* ── Dark theme (default) ─────────────────────────────────────────────────── */
+:root {
+  --c-bg:           #0A0908;
+  --c-surface:      #1A1714;
+  --c-border:       #2A2724;
+  --c-border-str:   #3A3530;
+  --c-text-pri:     #F5F1EA;
+  --c-text-sec:     #A39B8B;
+  --c-gold:         #C9A857;
+  --c-gold-dark:    #B8942A;
+  /* icon badge fill — warm bronze at 40% on dark surfaces */
+  --c-badge-bg:     rgba(107,91,63,0.40);
+  /* avatar / chip initials text colors — tuned for dark surfaces */
+  --av-0: #C9A857;
+  --av-1: #B8785A;
+  --av-2: #8A9678;
+  --av-3: #7A8B99;
+  --av-4: #A67B8B;
+  --av-5: #B8934A;
+}
+
+/* ── Light theme ──────────────────────────────────────────────────────────── */
+.theme-light {
+  --c-bg:           #FAF7F0;
+  --c-surface:      #FFFFFF;
+  --c-border:       #E5DFD3;
+  --c-border-str:   #D5CFC3;
+  --c-text-pri:     #211E1A;
+  --c-text-sec:     #6B6358;
+  --c-gold:         #A6823D;
+  --c-gold-dark:    #8A6B28;
+  /* icon badge fill — accent gold at 12% on light surfaces */
+  --c-badge-bg:     rgba(166,130,61,0.12);
+  /* avatar / chip initials text colors — darkened for 4.5:1 on white */
+  --av-0: #7A5B0F;
+  --av-1: #8B3A1A;
+  --av-2: #3D5235;
+  --av-3: #2B4A5E;
+  --av-4: #6B2E42;
+  --av-5: #7A5A14;
+}

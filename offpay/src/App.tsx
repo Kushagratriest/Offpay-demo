@@ -2783,6 +2783,9 @@ function AppInner() {
   }, []);
   const effectiveTheme = theme === "system" ? (sysDark ? "dark" : "light") : theme;
 
+  useEffect(() => {
+    document.body.classList.toggle("theme-light", effectiveTheme === "light");
+  }, [effectiveTheme]);
   const switchTab = (key: NavKey) => { setActiveTab(key); setScreen(key); };
   const goHome    = () => { setActiveTab("home"); setScreen("home"); };
 

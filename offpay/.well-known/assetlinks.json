@@ -1,8 +1,0 @@
-[{
-      "relation": ["delegate_permission/common.handle_all_urls"],
-      "target": {
-        "namespace": "android_app",
-        "package_name": "app.vercel.offpay_demo_f5kb.twa",
-        "sha256_cert_fingerprints": ["57:77:8B:90:B2:4E:92:9D:B1:0C:02:75:1C:CE:AE:FC:2A:C2:57:73:1C:1D:21:52:81:6A:A2:A7:15:D7:92:F4"]
-      }
-    }]

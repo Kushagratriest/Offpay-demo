@@ -1,20 +1,135 @@
 import { useState, useRef, useEffect } from "react";
 import {
-  IconWallet, IconArrowsRightLeft, IconQrcode, IconUserPlus,
-  IconHandStop, IconBuildingBank, IconUsersGroup,
-  IconFingerprint, IconShieldLock, IconCurrencyRupee,
-  IconReceiptOff, IconBluetoothOff, IconUsersPlus,
-} from "@tabler/icons-react";
-import {
-  Wallet, QrCode, Search, User, ChevronRight, Landmark,
-  HelpCircle, BookOpen, X, House, Copy, Plus,
-  Settings, ShieldCheck, LifeBuoy, Languages, History,
-  UserCog, ArrowLeft, ChevronDown, Delete, CreditCard,
-  Umbrella, Share2, Bluetooth, Phone, Zap, Tv2, Droplets,
-  Flame, Wifi, CheckCircle2, Moon, Sun, Monitor,
-  Clock, XCircle, AlertCircle, WifiOff, Bell, BellOff,
-  ShieldAlert, ArrowRightLeft, RefreshCw,
-} from "lucide-react";
+  Wallet as PhWallet, ArrowsLeftRight as PhArrowsLeftRight, QrCode as PhQrCode,
+  UserPlus as PhUserPlus, HandPalm as PhHandPalm, Bank as PhBank,
+  UsersThree as PhUsersThree, Fingerprint as PhFingerprint, Lock as PhLock,
+  CurrencyInr as PhCurrencyInr, ReceiptX as PhReceiptX, BluetoothSlash as PhBluetoothSlash,
+  UsersFour as PhUsersFour, X as PhX, User as PhUser, CaretRight as PhCaretRight,
+  CaretDown as PhCaretDown, Copy as PhCopy, Plus as PhPlus, GearSix as PhGearSix,
+  ShieldCheck as PhShieldCheck, Lifebuoy as PhLifebuoy, Translate as PhTranslate,
+  ClockCounterClockwise as PhClockCounterClockwise, UserGear as PhUserGear,
+  ArrowLeft as PhArrowLeft, Backspace as PhBackspace, CreditCard as PhCreditCard,
+  Umbrella as PhUmbrella, ShareNetwork as PhShareNetwork, Bluetooth as PhBluetooth,
+  Phone as PhPhone, Lightning as PhLightning, Television as PhTelevision,
+  Drop as PhDrop, Flame as PhFlame, WifiHigh as PhWifiHigh, CheckCircle as PhCheckCircle,
+  Moon as PhMoon, Sun as PhSun, Desktop as PhDesktop, Clock as PhClock,
+  XCircle as PhXCircle, WarningCircle as PhWarningCircle, WifiSlash as PhWifiSlash,
+  Bell as PhBell, BellSlash as PhBellSlash, ShieldWarning as PhShieldWarning,
+  ArrowClockwise as PhArrowClockwise, Question as PhQuestion, BookOpen as PhBookOpen,
+  House as PhHouse, MagnifyingGlass as PhMagnifyingGlass,
+} from "@phosphor-icons/react";
+
+// ── Force every icon to render as duotone, forward only the props this app
+//    actually uses (size, color) — ignores Tabler-era stroke/strokeWidth props
+//    so every call site elsewhere in this file keeps working unchanged. ────────
+type LegacyIconProps = { size?: number; color?: string; stroke?: number; strokeWidth?: number; className?: string };
+function duotone(Comp: any) {
+  return function DuotoneIcon({ size = 24, color = "currentColor", className }: LegacyIconProps) {
+    return <Comp size={size} color={color} weight="duotone" className={className} />;
+  };
+}
+
+// ── Same names the rest of the app already imports/uses — now Phosphor duotone ──
+const IconWallet             = duotone(PhWallet);
+const IconArrowsRightLeft    = duotone(PhArrowsLeftRight);
+const IconQrcode             = duotone(PhQrCode);
+const IconUserPlus           = duotone(PhUserPlus);
+const IconHandStop           = duotone(PhHandPalm);
+const IconBuildingBank       = duotone(PhBank);
+const IconUsersGroup         = duotone(PhUsersThree);
+const IconFingerprint        = duotone(PhFingerprint);
+const IconShieldLock         = duotone(PhLock);
+const IconCurrencyRupee      = duotone(PhCurrencyInr);
+const IconReceiptOff         = duotone(PhReceiptX);
+const IconBluetoothOff       = duotone(PhBluetoothSlash);
+const IconUsersPlus          = duotone(PhUsersFour);
+const IconSearch             = duotone(PhMagnifyingGlass);
+const IconUser               = duotone(PhUser);
+const IconChevronRight       = duotone(PhCaretRight);
+const IconChevronDown        = duotone(PhCaretDown);
+const IconX                  = duotone(PhX);
+const IconCopy                = duotone(PhCopy);
+const IconPlus                = duotone(PhPlus);
+const IconSettings            = duotone(PhGearSix);
+const IconShieldCheck         = duotone(PhShieldCheck);
+const IconLifebuoy             = duotone(PhLifebuoy);
+const IconLanguage             = duotone(PhTranslate);
+const IconHistory              = duotone(PhClockCounterClockwise);
+const IconUserCog              = duotone(PhUserGear);
+const IconArrowLeft            = duotone(PhArrowLeft);
+const IconBackspace            = duotone(PhBackspace);
+const IconCreditCard           = duotone(PhCreditCard);
+const IconUmbrella             = duotone(PhUmbrella);
+const IconShare2               = duotone(PhShareNetwork);
+const IconBluetooth            = duotone(PhBluetooth);
+const IconPhone                = duotone(PhPhone);
+const IconBolt                 = duotone(PhLightning);
+const IconDeviceTv             = duotone(PhTelevision);
+const IconDroplets             = duotone(PhDrop);
+const IconFlame                = duotone(PhFlame);
+const IconWifi                 = duotone(PhWifiHigh);
+const IconCircleCheck          = duotone(PhCheckCircle);
+const IconMoon                 = duotone(PhMoon);
+const IconSun                  = duotone(PhSun);
+const IconDeviceDesktop        = duotone(PhDesktop);
+const IconClock                = duotone(PhClock);
+const IconCircleX              = duotone(PhXCircle);
+const IconAlertCircle          = duotone(PhWarningCircle);
+const IconWifiOff              = duotone(PhWifiSlash);
+const IconBell                 = duotone(PhBell);
+const IconBellOff              = duotone(PhBellSlash);
+const IconShieldExclamation    = duotone(PhShieldWarning);
+const IconRefresh              = duotone(PhArrowClockwise);
+const IconHelpCircle           = duotone(PhQuestion);
+const IconBook2                = duotone(PhBookOpen);
+const IconHome                 = duotone(PhHouse);
+const IconUserEdit             = duotone(PhUserGear);
+
+// ── Aliases: map former Lucide names to Tabler equivalents ────────────────────
+const Wallet       = IconWallet;
+const QrCode       = IconQrcode;
+const Search       = IconSearch;
+const User         = IconUser;
+const ChevronRight = IconChevronRight;
+const Landmark     = IconBuildingBank;
+const HelpCircle   = IconHelpCircle;
+const BookOpen     = IconBook2;
+const X            = IconX;
+const House        = IconHome;
+const Copy         = IconCopy;
+const Plus         = IconPlus;
+const Settings     = IconSettings;
+const ShieldCheck  = IconShieldCheck;
+const LifeBuoy     = IconLifebuoy;
+const Languages    = IconLanguage;
+const History      = IconHistory;
+const UserCog      = IconUserCog;
+const ArrowLeft    = IconArrowLeft;
+const ChevronDown  = IconChevronDown;
+const Delete       = IconBackspace;
+const CreditCard   = IconCreditCard;
+const Umbrella     = IconUmbrella;
+const Share2       = IconShare2;
+const Bluetooth    = IconBluetooth;
+const Phone        = IconPhone;
+const Zap          = IconBolt;
+const Tv2          = IconDeviceTv;
+const Droplets     = IconDroplets;
+const Flame        = IconFlame;
+const Wifi         = IconWifi;
+const CheckCircle2 = IconCircleCheck;
+const Moon         = IconMoon;
+const Sun          = IconSun;
+const Monitor      = IconDeviceDesktop;
+const Clock        = IconClock;
+const XCircle      = IconCircleX;
+const AlertCircle  = IconAlertCircle;
+const WifiOff      = IconWifiOff;
+const Bell         = IconBell;
+const BellOff      = IconBellOff;
+const ShieldAlert  = IconShieldExclamation;
+const ArrowRightLeft = IconArrowsRightLeft;
+const RefreshCw    = IconRefresh;
 
 // ─── Rupee icon — wraps Tabler's IconCurrencyRupee (correct ₹ U+20B9 glyph) ──
 function RupeeIcon({ size = 24, color = "currentColor", strokeWidth = 1.75 }: { size?: number; color?: string; strokeWidth?: number }) {
@@ -120,7 +235,7 @@ const NOTIF_ICONS: Record<NotifType, React.ElementType> = {
   system:   Bell,
 };
 const NOTIF_COLORS: Record<NotifType, string> = {
-  payment:  "#C9A857",
+  payment:  "var(--c-gold)",
   settled:  "#5B9B6B",
   security: "#C0564A",
   system:   "#7A8B99",
@@ -448,7 +563,7 @@ function QRCodeSVG({ size = 180, light = "#F5F1EA", dark = "#0A0908" }: { size?:
 
 function ScreenShell({ children, scrollable = true }: { children: React.ReactNode; scrollable?: boolean }) {
   return (
-    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif", paddingBottom: 80, boxSizing: "border-box", overflowY: scrollable ? "auto" : "hidden" }}>
+    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif", paddingBottom: 80, boxSizing: "border-box", overflowY: scrollable ? "auto" : "hidden" }}>
       <div style={{ height: 44 }} />
       {children}
     </div>
@@ -474,13 +589,13 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
   const [page,    setPage]    = useState(0);
   const [pressed, setPressed] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const CARD_W = 343;
 
   useEffect(() => {
     const id = setInterval(() => {
       setPage((p) => {
         const next = (p + 1) % TIPS.length;
-        const cardW = scrollRef.current?.clientWidth ?? 0;
-        scrollRef.current?.scrollTo({ left: next * cardW, behavior: "smooth" });
+        scrollRef.current?.scrollTo({ left: next * CARD_W, behavior: "smooth" });
         return next;
       });
     }, 4000);
@@ -489,13 +604,12 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const cardW = scrollRef.current.clientWidth || 1;
-    const idx = Math.round(scrollRef.current.scrollLeft / cardW);
+    const idx = Math.round(scrollRef.current.scrollLeft / CARD_W);
     setPage(Math.max(0, Math.min(idx, TIPS.length - 1)));
   };
 
   return (
-    <div style={{ height: 140, backgroundColor: P.surface, border: `1px solid ${P.border}`, borderRadius: 14, marginLeft: 16, marginRight: 16, marginTop: 16, overflow: "hidden", position: "relative" }}>
+    <div style={{ width: CARD_W, height: 140, backgroundColor: P.surface, border: `1px solid ${P.border}`, borderRadius: 14, marginLeft: 16, marginTop: 16, overflow: "hidden", position: "relative", flexShrink: 0 }}>
       <div ref={scrollRef} onScroll={handleScroll}
         style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", height: "100%" }}
       >
@@ -508,7 +622,7 @@ function BannerTips({ onNavigate }: { onNavigate: (s: Screen) => void }) {
               onMouseDown={() => setPressed(i)}
               onMouseUp={() => setPressed(null)}
               onMouseLeave={() => setPressed(null)}
-              style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", height: 140, display: "flex", alignItems: "center", gap: 14, padding: "0 16px 24px", boxSizing: "border-box", cursor: "pointer", backgroundColor: isPressed ? P.border : "transparent", transition: "background-color 100ms ease" }}
+              style={{ scrollSnapAlign: "start", flexShrink: 0, width: CARD_W, height: 140, display: "flex", alignItems: "center", gap: 14, padding: "0 16px 24px", boxSizing: "border-box", cursor: "pointer", backgroundColor: isPressed ? P.border : "transparent", transition: "background-color 100ms ease" }}
             >
               <div style={{ width: 44, height: 44, borderRadius: "50%", backgroundColor: "var(--c-badge-bg)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                 <Icon size={22} color={P.gold} stroke={1.75} />
@@ -1003,7 +1117,7 @@ function BillsRechargeScreen({ onBack }: { onBack: () => void }) {
 // ─── Transaction Detail View ──────────────────────────────────────────────────
 
 const TX_STATUS_COLORS: Record<TxStatus, string> = {
-  Settled: "#C9A857",
+  Settled: "var(--c-gold)",
   Pending: "#D4A24F",
   Failed:  "#C0564A",
 };
@@ -1221,10 +1335,10 @@ const ISSUE_TYPES = ["Wrong amount deducted","Transfer not received","Transactio
 // shared bottom sheet wrapper
 function BottomSheet({ onClose, title, children }: { onClose: () => void; title: string; children: React.ReactNode }) {
   return (
-    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 300, display: "flex", alignItems: "flex-end", justifyContent: "center" }}
+    <div style={{ position: "fixed", inset: 0, left: "50%", transform: "translateX(-50%)", width: 375, backgroundColor: "rgba(0,0,0,0.65)", zIndex: 300, display: "flex", alignItems: "flex-end" }}
       onClick={onClose}
     >
-      <div style={{ width: "100%", maxWidth: 480, backgroundColor: P.surface, borderRadius: "20px 20px 0 0", padding: "24px 16px 48px", border: `1px solid ${P.border}`, maxHeight: "75vh", overflowY: "auto" }}
+      <div style={{ width: "100%", backgroundColor: P.surface, borderRadius: "20px 20px 0 0", padding: "24px 16px 48px", border: `1px solid ${P.border}`, maxHeight: "75vh", overflowY: "auto" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
@@ -1245,8 +1359,8 @@ function ConfirmModal({ title, body, confirmLabel, confirmDanger, onConfirm, onC
   onConfirm: () => void; onCancel: () => void; children?: React.ReactNode;
 }) {
   return (
-    <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(0,0,0,0.72)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", boxSizing: "border-box" }}>
-      <div style={{ width: "100%", maxWidth: 400, backgroundColor: P.surface, borderRadius: 20, padding: "28px 20px 20px", border: `1px solid ${P.border}` }}>
+    <div style={{ position: "fixed", inset: 0, left: "50%", transform: "translateX(-50%)", width: 375, backgroundColor: "rgba(0,0,0,0.72)", zIndex: 400, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 24px", boxSizing: "border-box" }}>
+      <div style={{ width: "100%", backgroundColor: P.surface, borderRadius: 20, padding: "28px 20px 20px", border: `1px solid ${P.border}` }}>
         <div style={{ fontFamily: "'Fraunces', serif", fontSize: 20, fontWeight: 700, color: P.textPrimary, marginBottom: 8 }}>{title}</div>
         {body && <div style={{ fontSize: 14, color: P.textSecondary, lineHeight: "20px", marginBottom: 20 }}>{body}</div>}
         {children}
@@ -2230,7 +2344,7 @@ function SplashScreen({ onDone }: { onDone: () => void }) {
   }, [onDone]);
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: "#0A0908", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+    <div style={{ width: 375, minHeight: "100vh", backgroundColor: "#0A0908", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
       <style>{`
         @keyframes splashFadeIn {
           from { opacity: 0; transform: scale(0.86); }
@@ -2373,7 +2487,7 @@ function OnboardingFlow({ onComplete }: { onComplete: (name: string) => void }) 
   const [phone, setPhone] = useState("");
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
       <style>{`
         @keyframes slideInRight{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
         @keyframes slideInLeft{from{opacity:0;transform:translateX(-28px)}to{opacity:1;transform:translateX(0)}}
@@ -2405,10 +2519,8 @@ function ActionButton({ icon: Icon, label, onClick }: { icon: React.ElementType;
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
     >
-      <div style={{ width: 72, height: 72, borderRadius: 20, backgroundColor: pressed ? "var(--c-badge-bg)" : P.surface, border: `1.5px solid ${hovered || pressed ? P.gold : "transparent"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 150ms ease, border-color 150ms ease", transform: pressed ? "scale(0.94)" : "scale(1)" }}>
-        <div style={{ width: 56, height: 56, borderRadius: "50%", backgroundColor: "var(--c-badge-bg)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Icon size={28} color={P.gold} stroke={1.75} />
-        </div>
+      <div style={{ width: 76, height: 76, borderRadius: 22, backgroundColor: pressed ? "var(--c-badge-bg)" : P.surface, border: `1.5px solid ${hovered || pressed ? P.gold : "transparent"}`, display: "flex", alignItems: "center", justifyContent: "center", transition: "background-color 150ms ease, border-color 150ms ease", transform: pressed ? "scale(0.94)" : "scale(1)" }}>
+        <Icon size={34} color={P.gold} />
       </div>
       <span style={{ fontSize: 12, fontWeight: 500, color: hovered ? P.textPrimary : P.textSecondary, textAlign: "center", lineHeight: "16px", maxWidth: 90, fontFamily: "'Inter', sans-serif", transition: "color 150ms ease" }}>{label}</span>
     </div>
@@ -2422,14 +2534,12 @@ function ActionsCarousel({ onPageChange, onAction, walletBalance, bankBalance }:
 
   const handleScroll = () => {
     if (!scrollRef.current) return;
-    const cardW = scrollRef.current.clientWidth || 1;
-    const idx = Math.round(scrollRef.current.scrollLeft / cardW);
+    const idx = Math.round(scrollRef.current.scrollLeft / 343);
     const c = Math.max(0, Math.min(idx, 1));
     setPage(c); onPageChange(c);
   };
   const scrollTo = (idx: number) => {
-    const cardW = scrollRef.current?.clientWidth ?? 0;
-    scrollRef.current?.scrollTo({ left: idx * cardW, behavior: "smooth" });
+    scrollRef.current?.scrollTo({ left: idx * 343, behavior: "smooth" });
     setPage(idx); onPageChange(idx);
   };
 
@@ -2438,14 +2548,14 @@ function ActionsCarousel({ onPageChange, onAction, walletBalance, bankBalance }:
   const liveAmt = { wallet: walletBalance, bank: bankBalance };
 
   return (
-    <div style={{ marginTop: 24, marginLeft: 16, marginRight: 16 }}>
+    <div style={{ marginTop: 24, marginLeft: 16, width: 343 }}>
       <div ref={scrollRef} onScroll={handleScroll}
         style={{ display: "flex", overflowX: "auto", scrollSnapType: "x mandatory", scrollbarWidth: "none", height: trackH, transition: "height 250ms ease" }}
       >
-        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "95px 95px", gap: 16, alignContent: "start", height: GRID_HEIGHT }}>
+        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: 343, display: "grid", gridTemplateColumns: "repeat(3, calc((343px - 32px) / 3))", gridTemplateRows: "95px 95px", gap: 16, alignContent: "start", height: GRID_HEIGHT }}>
           {ACTIONS.map((a) => <ActionButton key={a.label} icon={a.icon} label={a.label} onClick={() => onAction(a.screen)} />)}
         </div>
-        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: "100%", height: page2H, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 250ms ease" }}>
+        <div style={{ scrollSnapAlign: "start", flexShrink: 0, width: 343, height: page2H, display: "flex", alignItems: "center", justifyContent: "center", transition: "height 250ms ease" }}>
           {balanceView === null ? (
             <div style={{ display: "flex", gap: 12, width: "100%" }}>
               {(["wallet","bank"] as BalanceKey[]).map((key) => (
@@ -2525,7 +2635,7 @@ function HomeScreen({ onNavigate, onTabSwitch, walletBalance, bankBalance, userN
     : [];
 
   return (
-    <div style={{ width: "100%", minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
+    <div style={{ width: 375, minHeight: "100vh", backgroundColor: P.bg, fontFamily: "'Inter', sans-serif" }}>
       {/* Sticky header */}
       <div style={{ position: "sticky", top: 0, zIndex: 50, backgroundColor: P.bg, paddingTop: 44 }}>
         <div style={{ margin: "16px 16px 0", display: "flex", alignItems: "center", gap: 12, position: "relative" }}>
@@ -2758,7 +2868,7 @@ function NotificationsScreen({ notifs, onMarkRead, onBack }: {
 
 type AppPhase = "splash" | "biometric" | "onboarding" | "bluetooth" | "app";
 
-function AppInner() {
+export default function App() {
   const [phase,            setPhase]            = useState<AppPhase>("splash");
   const [onboardingDone,   setOnboardingDone]   = useState(false);
   const [bluetoothEnabled, setBluetoothEnabled] = useState(false);
@@ -2786,10 +2896,6 @@ function AppInner() {
   }, []);
   const effectiveTheme = theme === "system" ? (sysDark ? "dark" : "light") : theme;
 
-  useEffect(() => {
-    document.body.classList.toggle("theme-light", effectiveTheme === "light");
-  }, [effectiveTheme]);
-
   const switchTab = (key: NavKey) => { setActiveTab(key); setScreen(key); };
   const goHome    = () => { setActiveTab("home"); setScreen("home"); };
 
@@ -2802,7 +2908,7 @@ function AppInner() {
   };
 
   const navBar = (
-    <div style={{ position: "fixed", bottom: 0, left: 0, right: 0, width: "100%", maxWidth: 480, margin: "0 auto", height: 60, backgroundColor: P.surface, borderTop: `1px solid ${P.border}`, display: "flex", alignItems: "center", zIndex: 100 }}>
+    <div style={{ position: "fixed", bottom: 0, left: "50%", transform: "translateX(-50%)", width: 375, height: 60, backgroundColor: P.surface, borderTop: `1px solid ${P.border}`, display: "flex", alignItems: "center", zIndex: 100 }}>
       {NAV_TABS.map(({ key, icon: Icon, label }) => {
         const active = activeTab === key;
         return (
@@ -2819,7 +2925,7 @@ function AppInner() {
 
   const wrap = (child: React.ReactNode) => (
     <div className={effectiveTheme === "light" ? "theme-light" : ""}
-      style={{ width: "100%", maxWidth: 480, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
+      style={{ width: 375, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
     >{child}</div>
   );
 
@@ -2896,89 +3002,10 @@ function AppInner() {
 
   return (
     <div className={effectiveTheme === "light" ? "theme-light" : ""}
-      style={{ width: "100%", maxWidth: 480, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
+      style={{ width: 375, margin: "0 auto", position: "relative", minHeight: "100vh", backgroundColor: P.bg }}
     >
       {content}
       {navBar}
-    </div>
-  );
-}
-
-// ══════════════════════════════════════════════════════════════════════════════
-// ACCESS GATE — founders-only lock, wraps the real app
-// ══════════════════════════════════════════════════════════════════════════════
-
-const ACCESS_CODE = "OFFPAY777";       // change this to whatever code you 3 agree on
-const GATE_STORAGE_KEY = "offpay_gate_unlocked_v1";
-
-export default function App() {
-  const [unlocked, setUnlocked] = useState<boolean>(() => {
-    try { return sessionStorage.getItem(GATE_STORAGE_KEY) === "1"; } catch { return false; }
-  });
-  const [code, setCode] = useState("");
-  const [error, setError] = useState(false);
-
-  if (unlocked) return <AppInner />;
-
-  const tryUnlock = () => {
-    if (code.trim().toUpperCase() === ACCESS_CODE) {
-      try { sessionStorage.setItem(GATE_STORAGE_KEY, "1"); } catch {}
-      setUnlocked(true);
-    } else {
-      setError(true);
-      setCode("");
-      setTimeout(() => setError(false), 1500);
-    }
-  };
-
-  return (
-    <div style={{
-      minHeight: "100vh", width: "100%", background: "#0A0908",
-      display: "flex", flexDirection: "column", alignItems: "center",
-      justifyContent: "center", padding: 24, fontFamily: "system-ui, sans-serif",
-    }}>
-      <div style={{
-        width: 56, height: 56, borderRadius: 16, background: "#1A1714",
-        border: "1px solid #C9A857", display: "flex", alignItems: "center",
-        justifyContent: "center", marginBottom: 20,
-      }}>
-        <span style={{ color: "#C9A857", fontSize: 24 }}>🔒</span>
-      </div>
-      <div style={{ color: "#F5F1EA", fontSize: 20, fontWeight: 700, marginBottom: 6 }}>
-        OffPay — Founders Preview
-      </div>
-      <div style={{ color: "#A39B8B", fontSize: 13, marginBottom: 24, textAlign: "center" }}>
-        This build is private. Enter the access code shared with the team.
-      </div>
-      <input
-        type="password"
-        value={code}
-        onChange={(e) => setCode(e.target.value)}
-        onKeyDown={(e) => e.key === "Enter" && tryUnlock()}
-        placeholder="Access code"
-        autoFocus
-        style={{
-          width: "100%", maxWidth: 280, height: 48, borderRadius: 12,
-          border: `1.5px solid ${error ? "#EF4444" : "#334155"}`,
-          background: "#1A1714", color: "#F5F1EA", fontSize: 16,
-          textAlign: "center", marginBottom: 16, outline: "none",
-        }}
-      />
-      {error && (
-        <div style={{ color: "#EF4444", fontSize: 13, marginBottom: 12 }}>
-          Wrong code — try again
-        </div>
-      )}
-      <button
-        onClick={tryUnlock}
-        style={{
-          width: "100%", maxWidth: 280, height: 48, borderRadius: 12,
-          background: "#C9A857", color: "#0A0908", fontSize: 16, fontWeight: 600,
-          border: "none", cursor: "pointer",
-        }}
-      >
-        Unlock
-      </button>
     </div>
   );
 }
